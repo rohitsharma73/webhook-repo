@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, render_template
 from app.extensions import mongo
 import datetime
 
-webhook = Blueprint('Webhook', __name__)
+webhook = Blueprint('Webhook', __name__, url_prefix='/webhook')
 
 @webhook.route('/receiver', methods=["POST"])
 def receiver():
@@ -13,7 +13,7 @@ def receiver():
         event = {
             "event_type": event_type,
             "event_data": data,
-            "timestamp": datetime.datetime.now(tz=datetime.timezone.utc)
+            "timestamp": datetime.datetime.utcnow()
         }
         mongo.db.events.insert_one(event)
         return jsonify({"message": "Event received"}), 200
